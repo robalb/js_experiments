@@ -64,4 +64,5 @@ __proto__: {
 */
 var car2 = new Car("aa2","bb2");
 
-
+let a = 2;
+console.log(a);
