@@ -1,6 +1,7 @@
 https://www.codewars.com/kata/multi-line-task-hello-world-without-letters/train/javascript
 You are provided with:
 
+
 let $ = 'CSg';
 
 You need to change $ into a function that returns the string 'Hello, world!'.
