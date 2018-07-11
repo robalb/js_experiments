@@ -8,7 +8,7 @@
      code: code,
      userAgent: '',
      clientId: 'WJ25uK_7RfTKCg',
-     redirectUri: 'https://robalb.github.io/memeinvestor_bot/about.html',
+     redirectUri: 'https://robalb.github.io',
      grant_type: 'authorization_code'
    }).then(r => {
      // Now we have a requester that can access reddit through the user's account
