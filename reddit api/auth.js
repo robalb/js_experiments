@@ -11,10 +11,8 @@
         redirectUri: 'https://robalb.github.io/memeinvestor_bot/about.html'
       }).then(r => {
         // Now we have a requester that can access reddit through the user's account
-        return r.getHot().then(posts => {
-          // do something with posts from the front page
-          console.log(posts)
-        });
+          console.log(r)
+
       })     
 
    });
