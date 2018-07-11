@@ -8,7 +8,7 @@
         code: code,
         userAgent: 'not reqquired',
         clientId: 'WJ25uK_7RfTKCg',
-        redirectUri: 'example.com'
+        redirectUri: 'https://robalb.github.io/memeinvestor_bot/about.html'
       }).then(r => {
         // Now we have a requester that can access reddit through the user's account
         return r.getHot().then(posts => {
