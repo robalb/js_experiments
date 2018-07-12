@@ -8,7 +8,7 @@
      code: code,
      userAgent: '',
      clientId: 'WJ25uK_7RfTKCg',
-     redirectUri: 'https://robalb.github.io',
+     redirectUri: 'https://robalb.github.io/js_experiments/reddit%20api/auth.html',
      grant_type: 'authorization_code'
    }).then(r => {
      // Now we have a requester that can access reddit through the user's account
