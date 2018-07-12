@@ -24,8 +24,19 @@ var r = false;
    }
    
    document.addEventListener('DOMContentLoaded', function(){
-      document.getElementById('auth-button').addEventListener('click',e=>{
-         auth();
-      });
+      if(r===false){
+         document.getElementById('auth-button').addEventListener('click',e=>{
+            auth();
+         });         
+      }else{
+         r.getMe().then(data=>{
+            console.log(data)
+            document.getElementById('app').innerHTML = 
+            `<h1>HEllo ${data.name}</h1>
+             <p>you have been authenticated over refreshToken.</p>
+            `
+            });
+      }
+
    });
 })();
