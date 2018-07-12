@@ -16,6 +16,7 @@ var r;
        r = _r
        localStorage.setItem('accessToken',r.accessToken); 
        localStorage.setItem('refreshToken',r.refreshToken); 
+       alert("you have been authenticated. that's cool. now go back to the index page")
    })   
 
    
