@@ -2,7 +2,7 @@ var r = false;
 (function(){
    
    let refreshToken = localStorage.getItem('refreshToken');
-   if(refreshToken.length > 0){
+   if(refreshToken){
       r = new snoowrap({
         clientId: 'WJ25uK_7RfTKCg',
         clientSecret: '',
