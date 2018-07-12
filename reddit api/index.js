@@ -1,4 +1,14 @@
+var r = false;
 (function(){
+   
+   let refreshToken = localStorage.getItem('refreshToken');
+   if(refreshToken.length > 0){
+      r = new snoowrap({
+        clientId: 'WJ25uK_7RfTKCg',
+        clientSecret: '',
+        refreshToken: refreshToken
+      });
+   }
    
    function auth(){
       var authenticationUrl = snoowrap.getAuthUrl({

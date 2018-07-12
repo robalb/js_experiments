@@ -14,7 +14,8 @@ var r;
      // Now we have a requester that can access reddit through the user's account
        console.log(_r)
        r = _r
-       //localStorage.setItem('refreshToken', JSON.stringify(user)); 
+       localStorage.setItem('accessToken',r.accessToken); 
+       localStorage.setItem('refreshToken',r.refreshToken); 
    })   
 
    
