@@ -76,12 +76,12 @@ document.addEventListener('DOMContentLoaded', function(){
 
    class ball {
       constructor(){
-         this.x = Math.floor(Math.random()*w)
-         this.y = Math.floor(Math.random()*h)
-         this.vx = (Math.random()*5)+0.1
-         this.vy = (Math.random()*5)+0.1
+         this.x = w/2
+         this.y = h/2
+         this.vx = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
+         this.vy = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
          this.radius = Math.floor(Math.random()*5)+2
-         this.color = 'rgba(255,25,255, 1)'
+         this.color = 'hsl('+Math.floor(Math.random()*359)+', 80%, 50%)'
       }
       draw(){
          x.beginPath();
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function(){
    }
    //create 10 balls
    let balls = []
-   for(let i=0;i< 500; i++) balls[i] = new ball()
+   for(let i=0;i< 1000; i++) balls[i] = new ball()
       
    /* --------------[ end setup ]-------------*/
    setTimeout(u, 500);
