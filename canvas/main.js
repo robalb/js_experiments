@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function(){
    // Obtain a reference to the canvas element using its id.
    const htmlCanvas = document.getElementById('canvas_bg'),
    // Obtain a graphics context on the canvas element for drawing.
-   const context = htmlCanvas.getContext('2d');
+    context = htmlCanvas.getContext('2d');
 
    // Register an event listener to call the resizeCanvas() function 
    // each time the window is resized.
@@ -27,5 +27,14 @@ document.addEventListener('DOMContentLoaded', function(){
      context.lineWidth = '5';
      context.strokeRect(0, 0, window.innerWidth, window.innerHeight);
    }
+   
+   
+   // Record the mouse position when it moves.
+   htmlCanvas.addEventListener('mousemove', function(e) {
+      context.fillStyle = "#000000";
+      context.fillRect (e.clientX, e.clientY, 4, 4);
+   });
+
+
 
 })
