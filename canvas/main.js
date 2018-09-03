@@ -74,26 +74,29 @@ document.addEventListener('DOMContentLoaded', function(){
    */
    /* --------------[ setup ]-------------*/
 
-   class ball {
+   class Star {
       constructor(){
+         this.area = 20
          this.x = w/2
          this.y = h/2
          this.vx = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
          this.vy = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
-         this.radius = Math.floor(Math.random()*5)+2
-         this.color = 'hsl('+Math.floor(Math.random()*359)+', 80%, 50%)'
+         this.radius = 0
+         this.maxRadius = (Math.random()*2)+1
+         this.acceleration = 1 + (this.maxRadius)/100
+         this.lightness = Math.random()*100
       }
       draw(){
          x.beginPath();
          x.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
          x.closePath();
-         x.fillStyle = this.color;
+         x.fillStyle = 'hsl(234, 40%, '+this.lightness+'%)'
          x.fill();
       }
    }
-   //create 10 balls
-   let balls = []
-   for(let i=0;i< 1000; i++) balls[i] = new ball()
+   //create 10 stars
+   let stars = []
+   for(let i=0;i< 1000; i++) stars[i] = new Star()
       
    /* --------------[ end setup ]-------------*/
    setTimeout(u, 500);
@@ -103,13 +106,27 @@ document.addEventListener('DOMContentLoaded', function(){
    //clear screen
    x.clearRect(0, 0, w, h);
    x.beginPath();
-   //draw and move every ball
-   for(let ball of balls){
-      ball.draw()
-      ball.x += ball.vx
-      ball.y += ball.vy
-      if(ball.x+ball.radius >= w || ball.x-ball.radius <= 0) ball.vx = -ball.vx
-      if(ball.y+ball.radius >= h || ball.y-ball.radius <= 0) ball.vy = -ball.vy
+   //draw and move every star
+   for(let star of stars){
+      star.draw()
+      //move
+      star.x += star.vx
+      star.y += star.vy
+      //accelerate
+
+      star.vx *= star.acceleration
+      star.vy *= star.acceleration
+      //increase size
+      if(star.radius < star.maxRadius) star.radius += 0.02
+      //move star back to center when it reaches the borders
+      if(star.x+star.radius >= w || star.x-star.radius <= 0 ||
+      star.y+star.radius >= h || star.y-star.radius <= 0){
+         star.x = w/2
+         star.y = h/2
+         star.radius = 0
+         star.vx = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
+         star.vy = ( (Math.random()*2) >1 ? -1 :1)*(Math.random()*5)+0.1
+      }
    }
 
    /* --------------[ end loop ]-------------*/  
