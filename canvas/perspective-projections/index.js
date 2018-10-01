@@ -31,7 +31,19 @@ function boot(){
 
 /* here we initialize the variables we are going to need */
 function setup(){
-  //clear the screen
+  
+   this.canvas.addEventListener('mousemove', function(e) {
+      Game.mouseX = e.clientX
+      Game.mouseY = e.clientY
+   });
+  
+  this.start('loop')
+}
+
+/* this function is executed 60 times per second */
+function loop(){
+  
+ //clear the screen
   this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   
   //CONFIGURATION
@@ -41,7 +53,7 @@ function setup(){
   let c2RightMargin = 20
   //alzato prospettico
   let alzatoBottomMargin = 160
-  let orizzonteHeight = 300
+  let orizzonteHeight = this.mouseY
   
   /* CANVAS COORDS SYSTEM
   
@@ -223,14 +235,6 @@ function setup(){
   })
   this.ctx.stroke()
   
-  
-  this.start('loop')
-}
-
-/* this function is executed 60 times per second */
-function loop(){
-  
-
   
 }
 
