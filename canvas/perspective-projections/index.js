@@ -52,8 +52,8 @@ function loop(){
   let c1LeftMargin = 20
   let c2RightMargin = 20
   //alzato prospettico
-  let alzatoBottomMargin = 160
-  let orizzonteHeight = this.mouseY
+  let alzatoBottomMargin = 20
+  let orizzonteHeight = this.mouseY*8
   
   /* CANVAS COORDS SYSTEM
   
@@ -213,7 +213,7 @@ function loop(){
     new PPoint(30, 30)
   ]
   let PShapes = [
-    new PShape([
+   /*  new PShape([
       new PPoint(-1*alzatoW + 20 , 10),
       new PPoint(-1*alzatoW +20, 100),
       new PPoint(alzatoW -20, 100)
@@ -225,8 +225,26 @@ function loop(){
       new PPoint(150, 320),
       new PPoint(-150, 320),
       new PPoint(-150, 20),
-    ])
+    ]) */
   ]
+  
+  let gridAmount = 20
+  let spacing = piantaW/gridAmount*2
+  for(let i=1; i<gridAmount; i++){
+    PShapes.push(
+      new PShape([
+        new PPoint(spacing * i -piantaW, 20),
+        new PPoint(spacing * i -piantaW, 800)
+      ])
+    )
+    PShapes.push(
+      new PShape([
+        new PPoint(piantaW* -1, i*spacing),
+        new PPoint(piantaW,i*spacing)
+      ])
+    ) 
+  }
+  
   
   PPoints.forEach(point => point.draw()) 
   PShapes.forEach(shape => {
