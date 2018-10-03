@@ -48,7 +48,7 @@ function loop(){
   
   //CONFIGURATION
   //pianta
-  let piantaBottomMargin = 260
+  let piantaBottomMargin = 100
   let c1LeftMargin = 20
   let c2RightMargin = 20
   //alzato prospettico
@@ -95,13 +95,13 @@ function loop(){
           Game.ctx.lineTo(px(this.points[i].x), py(this.points[i].y))
         }
     }
-    perspectiveDraw(cx,cy){
-      let p1 = project(this.points[0].x, this.points[0].y, cx, cy)
-      Game.ctx.moveTo(ax(p1.x), ay(p1.y))
-        for(let i=1; i< this.points.length; i++){
-          let pi = project(this.points[i].x, this.points[i].y, cx, cy)
-          Game.ctx.lineTo(ax(pi.x), ay(pi.y))
-        }
+    perspectiveDraw(cx,cy, z=200){
+      let p1 = project(this.points[0].x, this.points[0].y, cx, cy-z)
+      Game.ctx.moveTo(ax(p1.x), ay(p1.y+z))
+      for(let i=1; i< this.points.length; i++){
+        let pi = project(this.points[i].x, this.points[i].y , cx, cy-z)
+        Game.ctx.lineTo(ax(pi.x), ay(pi.y+z))
+      }
     }
   }
   class PPoint{
@@ -113,7 +113,7 @@ function loop(){
       pPoint(this.x, this.y)
     }
   }
-  
+
   /* ALZATO COORDS SYSTEM
            alzatoH 
               |
@@ -131,11 +131,12 @@ function loop(){
   let aPoint = (x, y) => this.ctx.fillRect(ax(x-1), ay(y+1), 2, 2)
   
   //magic conversion from pianta to alzato
-  let project = (px, py, cx, cy) => {
+  let project = (px, py, cx, cy, z=0) => {
     
     let x = px*cx/(cx+py)
     
     let y = cy*(x - px -py)/(cx + px + py)*-1
+
     
     return {
       x:x,
@@ -228,13 +229,13 @@ function loop(){
     ]) */
   ]
   
-  let gridAmount = 20
+  let gridAmount = 80
   let spacing = piantaW/gridAmount*2
   for(let i=1; i<gridAmount; i++){
     PShapes.push(
       new PShape([
         new PPoint(spacing * i -piantaW, 20),
-        new PPoint(spacing * i -piantaW, 800)
+        new PPoint(spacing * i -piantaW, 600)
       ])
     )
     PShapes.push(
@@ -249,7 +250,9 @@ function loop(){
   PPoints.forEach(point => point.draw()) 
   PShapes.forEach(shape => {
     shape.draw()
-    shape.perspectiveDraw(alzatoW, alzatoH)
+    for(let i=0; i< 4; i++){
+      shape.perspectiveDraw(alzatoW+c1LeftMargin, alzatoH, i*160)
+    }
   })
   this.ctx.stroke()
   
