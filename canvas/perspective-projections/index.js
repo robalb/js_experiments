@@ -53,7 +53,7 @@ function loop(){
   let c2RightMargin = 20
   //alzato prospettico
   let alzatoBottomMargin = 20
-  let orizzonteHeight = this.mouseY*8
+  let orizzonteHeight = this.mouseY * 2
   
   /* CANVAS COORDS SYSTEM
   
@@ -229,19 +229,22 @@ function loop(){
     ]) */
   ]
   
-  let gridAmount = 80
+  let distanceFromQPlane = this.mouseX /2 //- 2000 //grid goes trough spectator, into an inverse perspective world
+  let gridAmount = 20.001 // 1.001 => only the square outline 
   let spacing = piantaW/gridAmount*2
-  for(let i=1; i<gridAmount; i++){
+  for(let i=0; i<gridAmount; i++){
     PShapes.push(
       new PShape([
-        new PPoint(spacing * i -piantaW, 20),
-        new PPoint(spacing * i -piantaW, 600)
+        //vertical linees
+        new PPoint(spacing * i -piantaW, distanceFromQPlane),
+        new PPoint(spacing * i -piantaW, spacing*gridAmount + distanceFromQPlane)
       ])
     )
     PShapes.push(
       new PShape([
-        new PPoint(piantaW* -1, i*spacing),
-        new PPoint(piantaW,i*spacing)
+        //horizzontal linees
+        new PPoint(piantaW* -1, i*spacing +distanceFromQPlane),
+        new PPoint(piantaW,i*spacing +distanceFromQPlane)
       ])
     ) 
   }
