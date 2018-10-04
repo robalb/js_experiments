@@ -36,6 +36,10 @@ function setup(){
       Game.mouseX = e.clientX
       Game.mouseY = e.clientY
    });
+   canvas.addEventListener('touchmove', function(e) {
+      Game.mouseX = e.touches[0].pageX
+      Game.mouseY = e.touches[0].pageY
+   })
   
   this.start('loop')
 }
