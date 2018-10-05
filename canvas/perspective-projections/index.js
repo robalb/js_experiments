@@ -32,15 +32,34 @@ function boot(){
 /* here we initialize the variables we are going to need */
 function setup(){
   
-   this.canvas.addEventListener('mousemove', function(e) {
-      Game.mouseX = e.clientX
-      Game.mouseY = e.clientY
-   });
-   this.canvas.addEventListener('touchmove', function(e) {
-      Game.mouseX = e.touches[0].pageX
-      Game.mouseY = e.touches[0].pageY
-   })
+  this.wheelZoom = 0
   
+  this.canvas.addEventListener('mousemove', function(e) {
+    Game.mouseX = e.clientX
+    Game.mouseY = e.clientY
+  });
+  this.canvas.addEventListener('touchmove', function(e) {
+    Game.mouseX = e.touches[0].pageX
+    Game.mouseY = e.touches[0].pageY
+  })
+
+  
+  let MouseWheelHandler = e =>{
+    // cross-browser wheel delta
+    var e = window.event || e; // old IE support
+    var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+    console.log(this.wheelZoom )
+    
+    this.wheelZoom += delta
+    return false;
+  }
+  // IE9, Chrome, Safari, Opera
+  this.canvas.addEventListener("mousewheel", MouseWheelHandler, false);
+  // Firefox
+  this.canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+
+
+    
   this.start('loop')
 }
 
@@ -107,6 +126,9 @@ function loop(){
         Game.ctx.lineTo(ax(pi.x), ay(pi.y+z))
       }
     }
+    rotate(cx, cy, angle){
+      this.points.forEach(point=> rotatePoint(cx, cy, angle, point))
+    }
   }
   class PPoint{
     constructor(x, y){
@@ -139,13 +161,33 @@ function loop(){
     
     let x = px*cx/(cx+py)
     
-    let y = cy*(x - px -py)/(cx + px + py)*-1
+    let y = cy*(x - px -py)/-(cx + px + py)
 
     
     return {
       x:x,
       y:y
     }
+    
+  }
+  //magic point rotation
+  //TODO: make this procedural
+  function rotatePoint(cx, cy, angle, p){
+
+    let s = Math.sin(angle);
+    let c = Math.cos(angle);
+
+    // translate point back to origin:
+    p.x -= cx;
+    p.y -= cy;
+
+    // rotate point
+    let xnew = p.x * c - p.y * s;
+    let ynew = p.x * s + p.y * c;
+
+    // translate point back:
+    p.x = xnew + cx;
+    p.y = ynew + cy;
     
   }
 
@@ -233,7 +275,11 @@ function loop(){
     ]) */
   ]
   
-  let distanceFromQPlane = this.mouseX /2 //- 2000 //grid goes trough spectator, into an inverse perspective world
+
+
+  
+  //let distanceFromQPlane = this.mouseX /2 //- 2000 //grid goes trough spectator, into an inverse perspective world
+  let distanceFromQPlane = this.wheelZoom*15
   let gridAmount = 20.001 // 1.001 => only the square outline 
   let spacing = piantaW/gridAmount*2
   for(let i=0; i<gridAmount; i++){
@@ -247,14 +293,20 @@ function loop(){
     PShapes.push(
       new PShape([
         //horizzontal linees
-        new PPoint(piantaW* -1, i*spacing +distanceFromQPlane),
+        new PPoint(-piantaW, i*spacing +distanceFromQPlane),
         new PPoint(piantaW,i*spacing +distanceFromQPlane)
       ])
     ) 
   }
   
   
+  
+  
+  
   PPoints.forEach(point => point.draw()) 
+  
+  PShapes.forEach(shape => shape.rotate(0, -20, 100 + this.mouseX /500)) 
+  
   PShapes.forEach(shape => {
     shape.draw()
     for(let i=0; i< 4; i++){
