@@ -13,4 +13,22 @@ canvas {
   left:0px;
   top:0px;
   background-color:black;
+  z-index:2;
+}
+
+.options-container{
+  position: absolute;
+  top:0;
+  left:0;
+  z-index:3;
+}
+.options-container p{
+  color: white;
+}
+#toggle-option{
+  float:left;
+}
+#options{
+  border: 2px solid orange;
+  width:200px;
 }

@@ -33,6 +33,17 @@ function boot(){
 function setup(){
   
   this.wheelZoom = 0
+  this.controls = {
+    w: false,
+    a: false,
+    s: false,
+    d: false
+  }
+  
+  this.cameraRelativeX = 0
+  this.cameraRelativeY = 0
+  this.cameraRelativeAngleX = 0
+  this.cameraRelativeAngleY = 0
   
   this.canvas.addEventListener('mousemove', function(e) {
     Game.mouseX = e.clientX
@@ -57,9 +68,50 @@ function setup(){
   this.canvas.addEventListener("mousewheel", MouseWheelHandler, false);
   // Firefox
   this.canvas.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+  
+  
+  this.canvas.requestPointerLock = this.canvas.requestPointerLock ||
+                          this.canvas.mozRequestPointerLock;
 
+  document.exitPointerLock = document.exitPointerLock ||
+                           document.mozExitPointerLock;
 
-    
+  function lockChangeAlert() {
+    if (document.pointerLockElement === Game.canvas ||
+        document.mozPointerLockElement === Game.canvas) {
+      console.log('The pointer lock status is now locked');
+      document.addEventListener("mousemove", updatePosition, false);
+    } else {
+      console.log('The pointer lock status is now unlocked');  
+      document.removeEventListener("mousemove", updatePosition, false);
+    }
+  }
+  
+  function updatePosition(e) {
+  Game.cameraRelativeAngleX += e.movementX;
+  Game.cameraRelativeAngleY += e.movementY;
+  
+  }
+
+  this.canvas.onclick = function() {
+    Game.canvas.requestPointerLock();
+  }
+  document.addEventListener('pointerlockchange', lockChangeAlert, false);
+  document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+
+  window.addEventListener("keydown", onKeyDown, false);
+  window.addEventListener("keyup", onKeyUp, false);
+
+  function onKeyDown(event) {
+    let key = String.fromCharCode(event.keyCode).toLowerCase()
+    if(Game.controls.hasOwnProperty(key))Game.controls[key] = true
+  }
+  
+  function onKeyUp(event) {
+    let key = String.fromCharCode(event.keyCode).toLowerCase()
+    if(Game.controls.hasOwnProperty(key))Game.controls[key] = false
+  }
+
   this.start('loop')
 }
 
@@ -74,7 +126,8 @@ function loop(){
   let piantaBottomMargin = 100
   let c1LeftMargin = 20
   let c2RightMargin = 20
-  //alzato prospettico
+  let piantaZoom = 8
+  //alzato prospettico 
   let alzatoBottomMargin = 20
   let orizzonteHeight = this.mouseY * 2
   
@@ -103,8 +156,8 @@ function loop(){
   let piantaW = canvasW/4
   let piantaH = canvasH - piantaBottomMargin
   //return a canvas coord relative to the pianta
-  let px = x => piantaW + x;
-  let py = y => piantaH - y;
+  let px = x => piantaW + x /piantaZoom;
+  let py = y => piantaH - y /piantaZoom;
   //basic geometric utility functions
   let pPoint = (x, y) => this.ctx.fillRect(px(x-1), py(y+1), 2, 2)
   
@@ -131,12 +184,30 @@ function loop(){
     }
   }
   class PPoint{
-    constructor(x, y){
+    constructor(x, y, z=200){
       this.x = x
       this.y = y
+      this.z = z
+      this.cameraY = -(piantaW - c2RightMargin)
     }
     draw(){
       pPoint(this.x, this.y)
+    }
+    perspectiveDraw(cx,cy, z){
+      
+      if(this.y>this.cameraY){
+        let pi = project(this.x, this.y , cx, cy-this.z)
+        aPoint(pi.x, pi.y+this.z)
+      }
+    }
+    rotate(cx, cy, angle){
+      let p = {
+        x:this.x,
+        y:this.y
+      }
+      rotatePoint(cx, cy, angle, p)
+      this.x = p.x
+      this.y = p.y
     }
   }
 
@@ -248,17 +319,23 @@ function loop(){
   aPoint(alzatoW - c2RightMargin, alzatoH)
   
   //ACTUAL STUFF
+  
+  
+  
+  //controls
+  if(this.controls.w)this.cameraRelativeX -= 0.8
+  if(this.controls.s)this.cameraRelativeX += 0.8
+  if(this.controls.a)this.cameraRelativeY += 0.8
+  if(this.controls.d)this.cameraRelativeY -= 0.8
+  
+  
+  
   this.ctx.beginPath();
   this.ctx.strokeStyle = "orange"
   this.ctx.fillStyle = "orange"
   aPoint(0, 10)
   
-  let PPoints = [
-    new PPoint(0, 10),
-    new PPoint(10, 10),
-    new PPoint(20, 20),
-    new PPoint(30, 30)
-  ]
+  let PPoints = []
   let PShapes = [
    /*  new PShape([
       new PPoint(-1*alzatoW + 20 , 10),
@@ -276,13 +353,12 @@ function loop(){
   ]
   
 
-
   
   //let distanceFromQPlane = this.mouseX /2 //- 2000 //grid goes trough spectator, into an inverse perspective world
-  let distanceFromQPlane = this.wheelZoom*15
-  let gridAmount = 20.001 // 1.001 => only the square outline 
+  let distanceFromQPlane = this.cameraRelativeX*15
+  let gridAmount = 1.001 // 1.001 => only the square outline 
   let spacing = piantaW/gridAmount*2
-  for(let i=0; i<gridAmount; i++){
+/*   for(let i=0; i<gridAmount; i++){
     PShapes.push(
       new PShape([
         //vertical linees
@@ -297,15 +373,34 @@ function loop(){
         new PPoint(piantaW,i*spacing +distanceFromQPlane)
       ])
     ) 
+  } */
+  
+  let pointsPerLine = 20
+  let Xspacing = 10
+  
+  for(let i=0; i< pointsPerLine; i++){
+    for(let j=0; j< pointsPerLine; j++){
+      for(let k=0; k< pointsPerLine; k++){
+        PPoints.push(
+          new PPoint(-piantaW + k*Xspacing , distanceFromQPlane + j*Xspacing, i*Xspacing)
+        )
+      }
+    }
   }
   
   
   
   
-  
+  PPoints.forEach(point => point.rotate(0, -py( piantaW - c2RightMargin )+0.001, 100 + this.cameraRelativeAngleX/200)) 
+  PPoints.forEach(point => {
+    point.x += this.cameraRelativeY*25
+    point.y += this.cameraRelativeX*15
+  }) 
   PPoints.forEach(point => point.draw()) 
+  PPoints.forEach(point => point.perspectiveDraw(alzatoW+c1LeftMargin, alzatoH, 160)) 
   
-  PShapes.forEach(shape => shape.rotate(0, -20, 100 + this.mouseX /500)) 
+  
+  PShapes.forEach(shape => shape.rotate(0, -py( piantaW - c2RightMargin )+0.001, 100 + this.mouseX /500)) 
   
   PShapes.forEach(shape => {
     shape.draw()

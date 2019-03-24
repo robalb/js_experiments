@@ -1,5 +1,41 @@
+class Input{
+  constructor(id, ev, callback){
+    this.id = id
+    this.ev = ev
+    this.callback = callback
+    this.el = document.getElementById(id)
+    this.el.addEventListener(this.ev, this.callback)
+  }
+  remove(){
+    this.el.removeEventListener(this.ev, this.callback)
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function(){
 
+  let toggleButtonEl = document.getElementById('toggle-options');
+  let optionsEl = document.getElementById('options');
+  let isVisible = true;
+  toggleButtonEl.addEventListener('click', ()=> {
+    if(isVisible){ 
+      isVisible = false
+      optionsEl.style.display = 'none';
+    }else{
+      isVisible = true;
+      optionsEl.style.display = 'block';
+    }
+  })
+  let options = {}
+  let input1 = new Input('input1', 'change', ()=>{
+    options.input1 = document.getElementById('input1').value
+  })
+  let input2 = new Input('input2', 'change', ()=>{
+    options.input2 = document.getElementById('input2').value
+  })
+  let input3 = new Input('input3', 'click', ()=>{
+    console.log(options)
+  })
+  
    const htmlCanvas = document.getElementById('canvas_bg')
    const context = htmlCanvas.getContext('2d')
     
@@ -84,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function(){
     
     let particleRadius = 5
     let maxAmplitude = 100
-    let angularOffset = mouseX/ w/8
+    let angularOffset = options.input2/ w/8
     let particlesOnScreen = w
     
     let amplitude = h/2>maxAmplitude ? maxAmplitude : h/2
